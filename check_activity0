@@ -458,11 +458,11 @@ fi
 outfile="output"
 ./$program8 > $outfile  2>&1
 
-grep "char_count" hello8.c > $outfile
+grep "char_count" hello6.c > $outfile
 res1=$?
-grep "text" hello8.c > $outfile
+grep "text" hello6.c > $outfile
 res2=$?
-grep "strlen(" hello8.c > $outfile
+grep "strlen(" hello6.c > $outfile
 res3=$?
 if [[ $res1 == 0 && $res2 == 0 && $res3 ]] ; then
     echo  "${blue}$program8 has define and strlen ${nc}"

@@ -1,0 +1,553 @@
+#!/bin/bash
+# run with ./check_activity0 FL
+
+red=`tput setaf 1`
+blue=`tput setaf 4`
+green=`tput setaf 2`
+magenta=`tput setaf 6`
+nc=`tput sgr0`
+
+activity="activity0"
+program1="do_nothing"
+program2="hello0"
+program3="hello1"
+program4="hello2"
+program5="hello3"
+program6="hello4"
+program7="hello5"
+program8="hello6"
+program9="good_bye"
+
+let "tscore = 0"   #total score so far
+let "pscore = 0"   #program score
+let "totalp = 90"  #total points possible
+
+projects="projects"
+FL="$1"
+pdir=$projects$FL
+
+#projectsFL directory exists
+if [[ -d $pdir ]] ; then
+   echo "${blue}$pdir exists${nc}";
+   cd $pdir
+else
+   echo "${red}$pdir does not exist${nc}"
+   echo "${red} no grade ${nc}"
+   exit 1
+fi
+
+#activity directory exists
+if [[ -d $activity ]] ; then
+   echo "${blue}$activity exists${nc}";
+   cd $activity
+else
+   echo "${red}$activity does not exist${nc}";
+   let "total = 1"
+   echo "${green}$activity score: 0/$possible${nc}"
+   exit 1
+fi
+
+echo
+#program 1 
+check1() {
+if [[ -e $1".c" ]] ; then
+   echo "${blue}$1.c exists${nc}"  #program 1 exists
+else
+   echo "${red}$1.c does not exist${nc}"
+   echo "${green}$1 score: 2/10${nc}"
+   let "tscore = tscore + 2"
+   return 
+fi
+
+gcc $1".c" -o $1 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$1.c compiled${nc}"
+else
+   echo "${red}$1.c failed to compile${nc}"
+   echo "${green}$1 score: 6/10${nc}"
+   let "tscore = tscore + 6"
+   return 
+fi
+
+./$1  >  "output" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$1 ran successfuly${nc}"
+   echo "${green}$1 score: 10/10${nc}"
+   let "tscore = tscore + 10"
+   return 
+else
+   echo "${red}$1 did not run without error${nc}"
+   echo "${green}$1 score: 7/10${nc}"
+   let "tscore = tscore + 7"
+   return  
+fi
+}
+
+check1 $program1
+
+#echo "${magenta}total score after program 1: $tscore/$totalp${nc}"
+
+echo
+
+#program2 = $1
+check2() {
+if [[ -e $1".c" ]] ; then
+   echo "${blue}$1.c exists${nc}"
+else
+   echo "${red}$1.c does not exist${nc}"
+   echo "${green}$1 score: 1/10${nc}"
+   let "tscore = tscore + 1"
+   return
+fi
+
+gcc $1".c" -o $1 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$1.c compiled${nc}"
+else
+   echo "${red}$1.c failed to compile${nc}"
+   echo "${green}score: 4/10${nc}"
+   let "pscore = pscore + 4"
+   let "tscore = tscore + 4"
+   return
+fi
+
+outfile="output"
+./$program2 > $outfile  2>&1
+
+read -r line < $outfile
+if [[ $line  == "System Call!" ]] ; then
+    echo  "${blue}$1 has correct output${nc}"
+    let "pscore = pscore + 8"
+    let "tscore = tscore + 8"
+else
+    echo  "${red}$1 has incorrect output${nc}"
+    let "pscore = pscore + 5"
+    let "tscore = tscore + 5"
+fi
+    
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$1 ran successfuly${nc}"
+   let "pscore = pscore + 2"
+   let "tscore = tscore + 2" 
+   echo "${green}$1 score: $pscore/10${nc}"
+else
+   echo "${red}$program2 did not run without error${nc}"
+   echo "${green}$1 score: $pscore/10${nc}"
+fi
+return
+}
+
+let "pscore = 0"
+check2 $program2
+
+#echo "${magenta}total score after program 2: $tscore/$totalp${nc}"
+
+
+echo
+#program 3
+check3() {
+if [[ -e $program3".c" ]] ; then
+   echo "${blue}$program3.c exists${nc}"
+else
+   echo "${red}$program3.c does not exist${nc}"
+   echo "${green}$program3 score: 0/10${nc}"
+   return
+fi
+
+gcc $program3".c" -o $program3 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program3.c compiled${nc}"
+else
+   echo "${red}$program3.c failed to compile${nc}"
+   echo "${green}$program3 score: 4/10${nc}"
+   let "pscore = pscore + 4"
+   let "tscore = tscore + 4"
+   return
+fi
+
+outfile="output"
+./$program3 > $outfile  2>&1
+
+read -r line < $outfile
+if [[ $line  == "System Call!" ]] ; then
+    echo  "${blue}$program3 has correct output${nc}"
+   let "pscore = pscore + 8"
+   let "tscore = tscore + 8"
+else
+    echo  "${red}$program3 has incorrect output${nc}"
+   let "pscore = pscore + 5"
+   let "tscore = tscore + 5"
+fi
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program3 ran successfuly${nc}"
+   let "pscore = pscore + 2"
+   let "tscore = tscore + 2"
+   echo "${green}$program3 score: $pscore/10${nc}"
+else
+   echo "${red}$program3 did not run without error${nc}"
+   echo "${green}$program3 score: $pscore/10${nc}"
+fi
+return
+}
+
+
+let "pscore = 0"
+check3
+
+#echo "${magenta}total score after program 3: $tscore/$totalp${nc}"
+
+echo
+
+#program4
+check4() {
+if [[ -e $program4".c" ]] ; then
+   echo "${blue}$program4.c exists${nc}"
+else
+   echo "${red}$program4.c does not exist${nc}"
+   echo "${green}$program4 score: 0/10${nc}"
+   return
+fi
+
+gcc $program4".c" -o $program4 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program4.c compiled${nc}"
+else
+   echo "${red}$program4.c failed to compile${nc}"
+   echo "${green}$program4 score: 4/10${nc}"
+   let "pscore = pscore + 4"
+   let "tscore = tscore + 4"
+   return
+fi
+
+outfile="output"
+./$program4 > $outfile  2>&1
+
+read -r line < $outfile
+if [[ $line  == "System Call!" ]] ; then
+    echo  "${blue}$program4 has correct output${nc}"
+   let "pscore = pscore + 8"
+   let "tscore = tscore + 8"
+else
+    echo  "${red}$program4 has incorrect output${nc}"
+   let "pscore = pscore + 5"
+   let "tscore = tscore + 5"
+fi
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program4 ran successfuly${nc}"
+   let "pscore = pscore + 2"
+   let "tscore = tscore + 2"
+   echo "${green}$program4 score: $pscore/10${nc}"
+else
+   echo "${red}$program4 did not run without error${nc}"
+   echo "${green}$program4 score: $pscore/10${nc}"
+fi
+return
+}
+
+
+let "pscore = 0"
+check4
+
+#echo "${magenta}total score after program 4: $tscore/$totalp${nc}"
+
+echo
+#program5
+check5() {
+if [[ -e $program5".c" ]] ; then
+   echo "${blue}$program5.c exists${nc}"
+else
+   echo "${red}$program5.c does not exist${nc}"
+   echo "${green}$program5 score: 0/10${nc}"
+   return
+fi
+
+gcc $program5".c" -o $program5 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program5.c compiled${nc}"
+else
+   echo "${red}$program5.c failed to compile${nc}"
+   echo "${green}$program5 score: 4/10${nc}"
+   let "pscore = pscore + 4"
+   let "tscore = tscore + 4"
+   return
+fi
+
+outfile="output"
+./$program5 > $outfile  2>&1
+
+read -r line < $outfile
+if [[ $line  == "System Call" ]] ; then
+    echo  "${blue}$program5 has correct output${nc}"
+   let "pscore = pscore + 8"
+   let "tscore = tscore + 8"
+else
+    echo  "${red}$program5 has incorrect output${nc}"
+   let "pscore = pscore + 5"
+   let "tscore = tscore + 5"
+fi
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program5 ran successfuly${nc}"
+   let "pscore = pscore + 2"
+   let "tscore = tscore + 2"
+   echo "${green}$program5 score: $pscore/10${nc}"
+else
+   echo "${red}$program5 did not run without error${nc}"
+   echo "${green}$program5 score: $pscore/10${nc}"
+fi
+return
+}
+
+
+let "pscore = 0"
+check5
+
+#echo "${magenta}total score after program 5: $tscore/$totalp${nc}"
+
+echo
+#program6
+check6() {
+if [[ -e $program6".c" ]] ; then
+   echo "${blue}$program6.c exists${nc}"
+else
+   echo "${red}$program6.c does not exist${nc}"
+   echo "${green}$program6 score: 0/10${nc}"
+   return
+fi
+
+gcc $program6".c" -o $program6 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program6.c compiled${nc}"
+else
+   echo "${red}$program6.c failed to compile${nc}"
+   echo "${green}$program6 score: 4/10${nc}"
+   let "pscore = pscore + 4"
+   let "tscore = tscore + 4"
+   return
+fi
+
+outfile="output"
+./$program6 > $outfile  2>&1
+
+grep "#define" hello4.c > $outfile
+res1=$?
+grep "STDOUT" hello4.c > $outfile
+res2=$?
+if [[ $res1 == 0 && $res2 == 0  ]] ; then
+    echo  "${blue}$program6 has define statement ${nc}"
+   let "pscore = pscore + 8"
+   let "tscore = tscore + 8"
+else
+    echo  "${red}$program6 has missing/wrong define statement ${nc}"
+   let "pscore = pscore + 5"
+   let "tscore = tscore + 5"
+fi
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program6 ran successfuly${nc}"
+   let "pscore = pscore + 2"
+   let "tscore = tscore + 2"
+   echo "${green}$program6 score: $pscore/10${nc}"
+else
+   echo "${red}$program6 did not run without error${nc}"
+   echo "${green}$program6 score: $pscore/10${nc}"
+fi
+return
+}
+
+
+let "pscore = 0"
+check6
+
+#echo "${magenta}total score after program 6: $tscore/$totalp${nc}"
+
+echo 
+
+#program 7
+check7() {
+if [[ -e $program7".c" ]] ; then
+   echo "${blue}$program7.c exists${nc}"
+else
+   echo "${red}$program7.c does not exist${nc}"
+   echo "${green}$program7 score: 0/10${nc}"
+   return
+fi
+
+gcc $program7".c" -o $program7 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program7.c compiled${nc}"
+else
+   echo "${red}$program7.c failed to compile${nc}"
+   echo "${green}$program7 score: 1/10${nc}"
+   let "pscore = pscore + 1"
+   let "tscore = tscore + 1"
+   return
+fi
+
+outfile="output"
+./$program7 > $outfile  2>&1
+
+grep "#define" hello5.c > $outfile
+res1=$?
+grep "STDOUT" hello5.c > $outfile
+res2=$?
+grep "strlen(" hello5.c > $outfile
+res3=$?
+if [[ $res1 == 0 && $res2 == 0 && $res3 ]] ; then
+    echo  "${blue}$program7 has define and strlen ${nc}"
+   let "pscore = pscore + 8"
+   let "tscore = tscore + 8"
+else
+    echo  "${red}$program7 has missing something ${nc}"
+   let "pscore = pscore + 4"
+   let "tscore = tscore + 4"
+fi
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program7 ran successfuly${nc}"
+   let "pscore = pscore + 2"
+   let "tscore = tscore + 2"
+   echo "${green}$program7 score: $pscore/10${nc}"
+else
+   echo "${red}$program7 did not run without error${nc}"
+   echo "${green}$program7 score: $pscore/10${nc}"
+fi
+return
+}
+
+
+let "pscore = 0"
+check7
+
+#echo "${magenta}total score after program 7: $tscore/$totalp${nc}"
+
+echo
+#program 8
+check8() {
+if [[ -e $program8".c" ]] ; then
+   echo "${blue}$program8.c exists${nc}"
+else
+   echo "${red}$program8.c does not exist${nc}"
+   echo "${green}$program8 score: 0/10${nc}"
+   return
+fi
+
+gcc $program8".c" -o $program8 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program8.c compiled${nc}"
+else
+   echo "${red}$program8.c failed to compile${nc}"
+   echo "${green}$program8 score: 1/10${nc}"
+   let "pscore = pscore + 1"
+   let "tscore = tscore + 1"
+   return
+fi
+
+outfile="output"
+./$program8 > $outfile  2>&1
+
+grep "char_count" hello8.c > $outfile
+res1=$?
+grep "text" hello8.c > $outfile
+res2=$?
+grep "strlen(" hello8.c > $outfile
+res3=$?
+if [[ $res1 == 0 && $res2 == 0 && $res3 ]] ; then
+    echo  "${blue}$program8 has define and strlen ${nc}"
+   let "pscore = pscore + 8"
+   let "tscore = tscore + 8"
+else
+    echo  "${red}$program8 has missing something ${nc}"
+   let "pscore = pscore + 4"
+   let "tscore = tscore + 4"
+fi
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program8 ran successfuly${nc}"
+   let "pscore = pscore + 2"
+   let "tscore = tscore + 2"
+   echo "${green}$program8 score: $pscore/10${nc}"
+else
+   echo "${red}$program8 did not run without error${nc}"
+   echo "${green}$program8 score: $pscore/10${nc}"
+fi
+return
+}
+
+
+let "pscore = 0"
+check8
+
+#echo "${magenta}total score after program 8: $tscore/$totalp${nc}"
+
+echo
+#program 9
+check9() {
+if [[ -e $program9".c" ]] ; then
+   echo "${blue}$program9.c exists${nc}"
+else
+   echo "${red}$program9.c does not exist${nc}"
+   echo "${green}$program9 score: 0/10${nc}"
+   return
+fi
+
+gcc $program9".c" -o $program9 > $errors"_c" 2>&1
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program9.c compiled${nc}"
+else
+   echo "${red}$program9.c failed to compile${nc}"
+   echo "${green}$program9 score: 0/10${nc}"
+   return
+fi
+
+outfile="output"
+./$program9 > $outfile  2>&1
+
+grep "That's all for today!" good_bye.c > $outfile
+res1=$?
+grep "\n" good_bye.c > $outfile
+res2=$?
+grep "message: %s\n character " good_bye.c > $outfile
+res3=$?
+if [[ $res1 == 0 && $res2 == 0 && $res3 ]] ; then
+    echo  "${blue}$program9 passes ${nc}"
+   let "pscore = pscore + 8"
+   let "tscore = tscore + 8"
+else
+    echo  "${red}$program9 has missing something ${nc}"
+   let "pscore = pscore + 4"
+   let "tscore = tscore + 4"
+fi
+
+if [[ $? == 0 ]] ; then
+   echo "${blue}$program9 ran successfuly${nc}"
+   let "pscore = pscore + 2"
+   let "tscore = tscore + 2"
+   echo "${green}$program9 score: $pscore/10${nc}"
+else
+   echo "${red}$program9 did not run without error${nc}"
+   echo "${green}$program9 score: $pscore/10${nc}"
+fi
+return
+}
+
+
+let "pscore = 0"
+check9
+
+echo "${magenta}total $activity score: $tscore/$totalp${nc}"
+
+echo

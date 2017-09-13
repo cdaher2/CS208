@@ -10,5 +10,6 @@ int main(int argc, char** argv) {
 	while (read(file, &buffer, 1)) {
 		write(1, &buffer, 1);
 	}
+	close(file);
 	return 0;
 }

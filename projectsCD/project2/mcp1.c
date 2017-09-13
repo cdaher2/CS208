@@ -13,7 +13,6 @@ int main(int argc, char** argv) {
 	open(argv[2], O_WRONLY | O_CREAT, 0600);
 	while (read(3, &buffer, 1)){
 		write(4, &buffer, 1);
-		write(1, &buffer, 1);
 	}
 	close(3);
 	close(4);

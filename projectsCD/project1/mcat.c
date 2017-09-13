@@ -6,10 +6,10 @@
 char buffer;
 
 int main(int argc, char** argv) {
-	int file = open(argv[1], O_RDONLY);
-	while (read(file, &buffer, 1)) {
+	open(argv[1], O_RDONLY);
+	while (read(3, &buffer, 1)) {
 		write(1, &buffer, 1);
 	}
-	close(file);
+	close(3);
 	return 0;
 }

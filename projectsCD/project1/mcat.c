@@ -3,12 +3,13 @@
 //Christian Daher 9/11/17
 
 char buffer;
+int file;
 
 int main(int argc, char** argv) {
-	open(argv[1], 0000);
-	while (read(3, &buffer, 1)) {
+	file = open(argv[1], 0000);
+	while (read(file, &buffer, 1)) {
 		write(1, &buffer, 1);
 	}
-	close(3);
+	close(file);
 	return 0;
 }

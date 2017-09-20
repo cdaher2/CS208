@@ -6,10 +6,10 @@ void *calloc(long items, long size);
 char* itoa(int number, int field_len);
 char charac(int num);
 
-int main(void) {
-	printf("%s\n", itoa(123,6));
-	printf("%s\n", itoa(1523,6));
-}
+//int main(void) {
+//	printf("%s\n", itoa(123,6));
+//	printf("%s\n", itoa(1523,6));
+//}
 
 char* itoa(int number, int field_len){
 	int count = 0;

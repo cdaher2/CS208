@@ -9,35 +9,69 @@ char buffer;
 int file;
 int ops;
 int reps;
+int c;
 char* filename;
 
 int main(int argc, char** argv){
-	while((ops = getopt(argc, argv, "nc:")) != -1) {
-		switch (ops) {
-			case 'n':
-				reps = atoi(argv[optind]);
-				ops = 1;
-				break;
-			case 'c':
-				reps = atoi(argv[optind]);
-				ops = 2;
-				break;
-		}
+	ops = 0;
+	c = getopt(argc, argv, "nc:");
+	switch (c) {
+		case 'n':
+			reps = atoi(argv[optind]);
+			++optind;
+			ops = 1;
+			break;
+		case 'c':
+			--optind;
+			reps = atoi(argv[optind]);
+			++optind;
+			ops = 2;
+			break;
+		case '?':
+			write(2, "invalid option\n", 15);
+			return -1;
+		default:
+			ops = 0;
+			break;
 	}
 
-	filename = argv[optind];
-	write(1, filename, 5);
-
-	file = open(filename, O_RDONLY);
 	int i = 0;
-	while (i < reps) {
-		read (file, &buffer, 1);
-		write (1, &buffer, 1);
-		if (buffer == '\n') {
-			i = i + 1;
-		}
+	switch (ops) {
+		case 0:
+			filename = argv[1];
+			file = open(filename, O_RDONLY);
+			while(i < 10) {
+				read(file, &buffer, 1);
+				write(1, &buffer, 1);
+				if (buffer == '\n') {
+					++i;
+				}
+			}
+			break;
+		case 1:
+			filename = argv[optind];
+			file = open(filename, O_RDONLY);
+			while (i < reps) {
+				read (file, &buffer, 1);
+				write (1, &buffer, 1);
+				if (buffer == '\n') {
+					++i;
+				}
+			}
+			break;
+		case 2:
+			filename = argv[optind];
+			file = open(filename, O_RDONLY);
+			while (i < reps) {
+				read (file, &buffer, 1);
+				write (1, &buffer, 1);
+				++i;
+			}
+			if (buffer != '\n') {
+				write (1, "\n", 1);
+			}
+			break;
 	}
-	write (1, '\n', 1);
 	close(file);
 	return 0;
 }

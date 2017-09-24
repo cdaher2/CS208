@@ -14,27 +14,26 @@ char* filename;
 
 int main(int argc, char** argv){
 	ops = 0;
-	c = getopt(argc, argv, "nc:");
-	switch (c) {
-		case 'n':
-			reps = atoi(argv[optind]);
-			++optind;
-			ops = 1;
-			break;
-		case 'c':
-			--optind;
-			reps = atoi(argv[optind]);
-			++optind;
-			ops = 2;
-			break;
-		case '?':
-			write(2, "invalid option\n", 15);
-			return -1;
-		default:
-			ops = 0;
-			break;
+	while ((c = getopt(argc, argv, "nc")) > 0) {
+		switch (c) {
+			case 'n':
+				reps = atoi(argv[optind]);
+				++optind;
+				ops = 1;
+				break;
+			case 'c':
+				reps = atoi(argv[optind]);
+				++optind;
+				ops = 2;
+				break;
+			case '?':
+				write(2, "invalid option\n", 15);
+				return -1;
+			default:
+				ops = 0;
+				break;
+		}
 	}
-
 	int i = 0;
 	switch (ops) {
 		case 0:

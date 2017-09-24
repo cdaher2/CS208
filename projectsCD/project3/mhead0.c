@@ -15,7 +15,7 @@ int main(int argc, char** argv){
 			i = i + 1;
 		}
 	}
-	write (1, '\n', 1);
+	write (1, "\n", 1);
 	close(file);
 	return 0;
 }

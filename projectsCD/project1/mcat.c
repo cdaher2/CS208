@@ -1,6 +1,6 @@
-//mcat0.c
-//an alternate version of cat
-//Christian Daher 9/11/17
+//mcat.c
+//a finalized alternate version of cat
+//Christian Daher 9/11/24
 
 char buffer;
 int file;

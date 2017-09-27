@@ -2,7 +2,7 @@
 //an finalized alternate version of cat with the -n option
 //Christian Daher 9/13/17
 
-#include "cs212lib.h"
+#include <cs212lib.h>
 extern int optind;
 
 char buffer;

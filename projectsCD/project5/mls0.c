@@ -1,11 +1,12 @@
 //a version of ls written in c
 //Christian Daher 10/2/17
+
 #include <dirent.h>
-#define NULL (void *)0
 
 size_t strlen(const char *s);
 
 int main(int argc, char** argv) {
+
 	struct dirent* buffer;
 	DIR* cd;
 

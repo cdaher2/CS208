@@ -1,7 +1,8 @@
-//mtail0.c
+//mtail1.c
 //an alternate version of tail written in c
 //Christian Daher 9/24/2017
 #include <sys/types.h>
+#include <stdio.h>
 #define O_RDONLY 0000
 #define SEEK_CUR 1
 #define SEEK_END 2
@@ -37,14 +38,15 @@ int main(int argc, char** argv) {
 		i = 0;
 		switch(ops){
 			case 1:
-				filename = argv[optind];
-				file = open(filename, O_RDONLY);
-				lseek(file, -1, SEEK_END);
-				while (i <= reps) {
-					read(file, &buffer, 1);
-					lseek(file, -2, SEEK_CUR);
-					if (buffer == '\n'){
-						i++;
+				if (filename = argv[optind]) {
+					file = open(filename, O_RDONLY);
+					lseek(file, -1, SEEK_END);
+					while (i <= reps) {
+						read(file, &buffer, 1);
+						lseek(file, -2, SEEK_CUR);
+						if (buffer == '\n'){
+							i++;
+						}
 					}
 				}
 				break;
@@ -60,7 +62,9 @@ int main(int argc, char** argv) {
 		while (read(file, &buffer, 1)){
 			write (1, &buffer, 1);
 		}
+		close(file);
 		optind++;
+		printf("%i %i", optind, c);
 	}
 	return 0;
 }

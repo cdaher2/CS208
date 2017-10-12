@@ -1,5 +1,5 @@
 //mcat.c
-//an finalized alternate version of cat with the -n option
+//a finalized alternate version of cat with the -n option
 //Christian Daher 9/13/17
 
 #include <cs212lib.h>
@@ -21,7 +21,8 @@ int main(int argc, char** argv) {
 				ops = 0;
 				break;
 		}
-	
+	}
+	while (optind < argc) {
 		file = open(argv[optind], 0000);
 		int i = 1;
 		if (ops == 1) {
@@ -38,8 +39,9 @@ int main(int argc, char** argv) {
 				}
 			}
 		}
-		write (1, "\n", 1);
+		write (1, "\n\n", 2);
 		close (file);
-		return 0;
+		optind++;
 	}
+	return 0;
 }

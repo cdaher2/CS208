@@ -29,7 +29,7 @@ char* itoa (int number, int field_len) {
 
 	int numeral;
 	num = number;
-	while (num > 0){ //finds and inserts numeral characters into string
+	while (power > 0){ //finds and inserts numeral characters into string
 		numeral = num/power;
 		ascii_num[field_len - count] = charac(numeral);
 		count--;

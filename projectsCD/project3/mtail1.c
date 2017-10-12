@@ -2,7 +2,6 @@
 //an alternate version of tail written in c
 //Christian Daher 9/24/2017
 #include <sys/types.h>
-#include <stdio.h>
 #define O_RDONLY 0000
 #define SEEK_CUR 1
 #define SEEK_END 2
@@ -15,7 +14,9 @@ int file, ops, reps, c, i;
 char* filename;
 
 int main(int argc, char** argv) {
-	while (c = getopt(argc, argv, "nc")) {
+	reps = 10;
+	ops = 1;
+	while ((c = getopt(argc, argv, "nc")) > 0) {
 		switch(c) {
 			case 'n':
 				reps = atoi(argv[optind]);
@@ -28,43 +29,44 @@ int main(int argc, char** argv) {
 				ops = 2;
 				break;
 			case '?':
-				write(2, "invalid option\n", 15);
+				write (1, "invalid option\n", 15);
 				return -1;
 			default:
 				reps = 10;
 				ops = 1;
 				break;
 		}
-		i = 0;
-		switch(ops){
-			case 1:
-				if (filename = argv[optind]) {
-					file = open(filename, O_RDONLY);
-					lseek(file, -1, SEEK_END);
-					while (i <= reps) {
-						read(file, &buffer, 1);
-						lseek(file, -2, SEEK_CUR);
-						if (buffer == '\n'){
-							i++;
-						}
+	}
+	while (optind < argc){
+		i = 1;
+		filename = argv[optind];
+		file = open(filename, O_RDONLY);
+		if (file >= 0) {
+			if (ops == 1) {
+				lseek(file, -1, SEEK_END);
+				read(file, &buffer, 1);
+				while (i <= reps && lseek(file, -2, SEEK_CUR)) {
+					read(file, &buffer, 1);
+					if (buffer == '\n'){
+						i++;
 					}
 				}
-				break;
-			case 2:
+			}
+			else if (ops == 2) {
 				filename = argv[optind];
 				file = open(filename, O_RDONLY);
 				lseek(file, reps * -1, SEEK_END);
-				break;
+			}
+			while (read(file, &buffer, 1)){
+				write (1, &buffer, 1);
+			}
+			close(file);
 		}
-
-
-		read(file, &buffer, 2);
-		while (read(file, &buffer, 1)){
-			write (1, &buffer, 1);
+		else {
+			write (1, "no such file\n", 13);
 		}
-		close(file);
+		write (1, "\n", 1); 
 		optind++;
-		printf("%i %i", optind, c);
 	}
 	return 0;
 }

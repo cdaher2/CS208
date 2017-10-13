@@ -23,7 +23,7 @@ int main(int argc, char** argv){
 
 	cd = opendir(".");
 
-	while((c = getopt(argc, argv, "l")) > 0) {
+	while((c = getopt(argc, argv, "l")) != -1) {
 		switch (c) {
 			case 'l':
 				ops = 1;
@@ -36,18 +36,21 @@ int main(int argc, char** argv){
 	switch (ops) {
 		case 0:
 			while (buffer = readdir(cd)) {
-				write (1, buffer->d_name, strlen(buffer->d_name));
-				write (1, "\n", 1);
+				printf("%s \n", buffer->d_name);
 			}
 			break;
 		case 1:
-			while (stat(".", &buffer2)) {
-				printf("%o %d  \n", buffer2.st_mode, 
-				buffer2.st_uid);//, buffer2.st_gid, buffer2.st_size, 
-				//buffer2.st_nlink, buffer2.st_mtime, buffer2.st_atime, 
-				//buffer2.st_ctime);
-				printf("%s", buffer->d_name);
+			while (buffer = readdir(cd)) {
+				stat(buffer->d_name, &buffer2);
+				printf("%s\n", buffer->d_name);
+				printf("Mode: %lo Link count: %ld Ownership:UID:%ld GID:%ld Filesize: %ld\n Last modified: %s Last accessed: %s Last status change: %s \n", 
+				(unsigned long)buffer2.st_mode, (long)buffer2.st_nlink,
+				(long)buffer2.st_uid, (long)buffer2.st_gid, (long)buffer2.st_size, 
+				ctime(&buffer2.st_mtime), ctime(&buffer2.st_atime), 
+				ctime(&buffer2.st_ctime));
+				printf("\n");
 			}
+			write (1, "\n", 1);
 			break;
 	}
 
